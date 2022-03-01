@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: team-eve@f5.com
+    name: team EVE
+    url: http://f5.com
+  description: 'A facade API for NGINX unit. '
+  title: project eve API
+  version: "0.1"
+servers:
+- url: http://localhost:3000/eve/api/v1
+tags:
+- name: info
+- name: pull
+paths:
+  /info:
+    get:
+      description: for now a stub for the unit-config
+      operationId: get_info
+      responses:
+        "200":
+          description: http://unit.nginx.org
+      summary: info endpoint
+      tags:
+      - info
+      x-openapi-router-controller: apipackage.apicontroller.info_controller
+  /pull:
+    get:
+      description: gets a list of tracked repos.
+      operationId: get_pull
+      requestBody:
+        $ref: '#/components/requestBodies/RepoBody'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                example:
+                  value:
+                  - repo: http://github.com/codecowboydotio/git-pull-api/
+                    dest: /www/fooble
+                    branch: main
+              schema:
+                items:
+                  $ref: '#/components/schemas/repoModel'
+                type: array
+          description: Example response
+      summary: get configured repos
+      tags:
+      - pull
+      x-openapi-router-controller: apipackage.apicontroller.pull_controller
+    post:
+      description: Take a repo spec and clone it.
+      operationId: post_pull
+      requestBody:
+        $ref: '#/components/requestBodies/RepoBody'
+      responses:
+        "200":
+          description: OK
+      tags:
+      - pull
+      x-openapi-router-controller: apipackage.apicontroller.pull_controller
+components:
+  examples: {}
+  requestBodies:
+    RepoBody:
+      content:
+        application/json:
+          examples:
+            example:
+              value:
+                repo: string
+                dest: string
+                branch: string
+          schema:
+            $ref: '#/components/schemas/repoModel'
+  responses:
+    RepoResponse:
+      content:
+        application/json:
+          examples:
+            example:
+              value:
+              - repo: http://github.com/codecowboydotio/git-pull-api/
+                dest: /www/fooble
+                branch: main
+          schema:
+            items:
+              $ref: '#/components/schemas/repoModel'
+            type: array
+      description: Example response
+  schemas:
+    repoModel:
+      example:
+        repo: repo
+        dest: dest
+        branch: branch
+      properties:
+        repo:
+          type: string
+        dest:
+          type: string
+        branch:
+          type: string
+      required:
+      - branch
+      - dest
+      - repo
+      title: repoModel
+      type: object
+      x-examples:
+        example:
+          repo: http://github.com/codecowboydotio/git-pull-api/
+          dest: /www/fooble
+          branch: main
