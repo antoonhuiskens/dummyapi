@@ -1,0 +1,15 @@
+{
+    "listeners": {
+        "*:8080": {
+            "pass": "applications/connexion"
+        }
+    },
+
+    "applications": {
+        "connexion": {
+            "type": "python 3.8",
+            "path": "/usr/src/app/",
+            "module": "apipackage"
+        }
+    }
+}
